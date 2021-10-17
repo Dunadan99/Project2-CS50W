@@ -1,10 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
+from django.db.models import constraints
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.forms import ModelForm, widgets
 
-from .models import User
+from .models import Auction, User
 
 
 def index(request):
@@ -61,3 +63,22 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+class CreateForm(ModelForm):
+    class Meta:
+        model = Auction
+        fields = ['title', 'description', 'starting_bid', 'pic', 'auct_category']
+        labels = { 'starting_bid' : 'Price', 'auct_category' : 'Category', 'pic' : 'Picture URL'}
+        widgets = { 'description' : widgets.Textarea(attrs={'cols' : 30, 'rows' : 4}), 
+                    'starting_bid' : widgets.NumberInput(attrs={'min' : 0, 'value' : 0.0})}
+
+def create_listing(request):
+
+    if request.method == 'POST':
+        pass
+
+    form = CreateForm()
+    return render(request, "auctions/create_listing.html", {
+        "form": form 
+    })
+    

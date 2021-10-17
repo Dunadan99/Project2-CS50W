@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+    
+    <form action="{% url 'create_listing' %}" method="post">
+        {% csrf_token %}
+
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Create Listing">
+    </form>
+
+    
+
+{% else %}
+    <h4>
+        You need to 
+        <a href="{% url 'login' %}">login</a>
+         or 
+        <a href="{% url 'register' %}">register</a>
+         to create a listing.
+    </h4>
+{% endif %}
+
+{% endblock %}
