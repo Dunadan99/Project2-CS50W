@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.forms import ModelForm, widgets
 
-from .models import Auction, User
+from .models import Auction, User, Bid
 
 
 def index(request):
@@ -75,10 +75,35 @@ class CreateForm(ModelForm):
 def create_listing(request):
 
     if request.method == 'POST':
-        pass
+        form = CreateForm(request.POST)
+        if form.is_valid():
+            kwargs = {
+                'seller' : request.user,
+                'title' : form.cleaned_data['title'],
+                'description' : form.cleaned_data['description'],
+                'starting_bid' : form.cleaned_data['starting_bid'],
+                'pic' : form.cleaned_data['pic'],
+                'auct_category' : form.cleaned_data['auct_category']
+            }
+            auct = Auction(**kwargs)
+            auct.save()
+
+            kwargs = {
+                'bidder' : request.user,
+                'bid_price' : form.cleaned_data['starting_bid'],
+                'rel_auction' : auct
+            }
+            bid = Bid(**kwargs)
+            bid.save()
+
+            return HttpResponseRedirect(reverse("index"))            
+
 
     form = CreateForm()
     return render(request, "auctions/create_listing.html", {
         "form": form 
     })
+
+def listing(request):
+    return render(request, "auctions/listing.html")
     
