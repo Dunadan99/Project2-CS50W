@@ -20,6 +20,7 @@ class Auction(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sales")
     auct_category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, related_name="items")
     time = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title

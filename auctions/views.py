@@ -10,7 +10,8 @@ from .models import Auction, User, Bid
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    act_listings = Auction.objects.filter(is_active=True)
+    return render(request, "auctions/index.html", {"listings" : act_listings})
 
 
 def login_view(request):
@@ -68,12 +69,11 @@ class CreateForm(ModelForm):
     class Meta:
         model = Auction
         fields = ['title', 'description', 'starting_bid', 'pic', 'auct_category']
-        labels = { 'starting_bid' : 'Price', 'auct_category' : 'Category', 'pic' : 'Picture URL'}
-        widgets = { 'description' : widgets.Textarea(attrs={'cols' : 30, 'rows' : 4}), 
-                    'starting_bid' : widgets.NumberInput(attrs={'min' : 0, 'value' : 0.0})}
+        widgets = { 'description' : widgets.Textarea(attrs={'cols' : 30, 'rows' : 4, 'class' : 'textarea'}), 
+                    'starting_bid' : widgets.NumberInput(attrs={'min' : 0, 'value' : 0.0, 'class' : 'input'}),
+                    'title' : widgets.TextInput(attrs={'class' : 'input'}), 'pic' : widgets.URLInput(attrs={'class' : 'input'})}
 
 def create_listing(request):
-
     if request.method == 'POST':
         form = CreateForm(request.POST)
         if form.is_valid():
@@ -85,6 +85,8 @@ def create_listing(request):
                 'pic' : form.cleaned_data['pic'],
                 'auct_category' : form.cleaned_data['auct_category']
             }
+            if kwargs['pic'] == '':
+                kwargs['pic'] = 'https://icons-for-free.com/iconfiles/png/512/market+basket+shopping+basket+store+icon+icon-1320085906374523217.png'
             auct = Auction(**kwargs)
             auct.save()
 
@@ -96,14 +98,16 @@ def create_listing(request):
             bid = Bid(**kwargs)
             bid.save()
 
-            return HttpResponseRedirect(reverse("index"))            
-
+            return HttpResponseRedirect(reverse("index"))         
 
     form = CreateForm()
     return render(request, "auctions/create_listing.html", {
-        "form": form 
+        "form": form
     })
 
-def listing(request):
+def listing(request, id):
     return render(request, "auctions/listing.html")
+
+def categories(request):
+    return render(request, "auctions/categories.html")
     

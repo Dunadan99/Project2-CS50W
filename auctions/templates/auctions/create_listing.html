@@ -4,16 +4,52 @@
 
 {% block body %}
 
-{% if user.is_authenticated %}
-    
-    <form action="{% url 'create_listing' %}" method="post">
-        {% csrf_token %}
+<h2 class="title is-2">Create a Listing</h2>
 
-        <table>
-            {{ form.as_table }}
-        </table>
-        <input type="submit" value="Create Listing">
-    </form>
+{% if user.is_authenticated %}    
+    <div class="columns">
+        <div class="column is-10 is-offset-1">
+            <div class="box">
+                <form action="{% url 'create_listing' %}" method="post">
+                    {% csrf_token %}
+                    <div class="field">
+                        <label for="title" class="label">Title:</label>
+                        <div class="control">
+                            {{ form.title }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="description" class="label">Description:</label>
+                        <div class="control">
+                            {{ form.description }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="starting_bid" class="label">Starting bid:</label>
+                        <div class="control">
+                            {{ form.starting_bid }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="pic" class="label">Listing picture (URL):</label>
+                        <div class="control">
+                            {{ form.pic }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="category" class="label">Category:</label>
+                        <div class="control">
+                            <div class="select">{{ form.auct_category }}</div>
+                        </div>
+                    </div>
+                    <div class="buttons is-right">
+                        <input class="button is-success" type="submit" value="Create Listing">
+                        <a class="button is-danger" href="{% url 'index' %}">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     
 

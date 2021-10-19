@@ -11,7 +11,7 @@
         <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
     </head>
     <body>        
-        <nav class="navbar is-dark py-2 has-shadow">
+        <nav class="navbar is-dark is-fixed-top">
             <div class="navbar-brand">
                 <a class="navbar-item " href="{% url 'index' %}">
                     <span class="icon is-medium has-text-white mr-2">
@@ -21,15 +21,18 @@
                 </a>                
             </div>            
             <div class="navbar-menu">        
-                <div class="navbar-start has-text-white">
+                <div class="navbar-start">
                         <a class="navbar-item" href="{% url 'index' %}">Active Listings</a>
+                        <a class="navbar-item" href="{% url 'categories' %}">Categories</a>
                     {% if user.is_authenticated %}
+                        <a class="navbar-item" href="http://">Watchlist</a>
                         <a class="navbar-item" href="{% url 'create_listing' %}">Create Listing</a>    
                     {% endif %}
                 </div>    
                 
                 <div class="navbar-end">
                     {% if user.is_authenticated %}
+                        <div class="navbar-item">Logged in as {{ user.username }}.</div>
                         <div class="buttons  mr-2">
                             <a class="button is-danger" href="{% url 'logout' %}">Log Out</a>    
                         </div>                    
@@ -43,7 +46,7 @@
                 </div>                
             </div>
         </nav>
-        <section class="section">
+        <section class="section mt-6">
             {% block body %}
             {% endblock %}
         </section>

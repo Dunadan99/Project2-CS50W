@@ -4,29 +4,49 @@
 
 {% block body %}
 
-    <h2>Register</h2>
+    <h2 class="title is-2">Register</h2>
 
     {% if message %}
-        <div>{{ message }}</div>
+        <div class="notification is-danger is-light">{{ message }}</div>
     {% endif %}
+    <div class="columns">
+        <div class="column is-half is-offset-one-quarter">
+            <div class="box">
+                <form action="{% url 'register' %}" method="post">
+                    {% csrf_token %}
+                    <div class="field">       
+                        <label class="label" for="username">Username:</label>             
+                        <div class="control">
+                            <input class="input" autofocus type="text" name="username" placeholder="Username">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="email">Email:</label>
+                        <div class="control">
+                            <input class="input" type="email" name="email" placeholder="Email Address">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="password">Password:</label>
+                        <div class="control">
+                            <input class="input" type="password" name="password" placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="password confirmation" class="label">Confirm password:</label>
+                        <div class="control">
+                            <input class="input" type="password" name="confirmation" placeholder="Confirm Password">
+                        </div>
+                    </div>
+                    <div class="buttons is-right"><input class="button is-success" type="submit" value="Register"></div>
+                </form>
 
-    <form action="{% url 'register' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <input class="form-control" autofocus type="text" name="username" placeholder="Username">
+                <div class="field">
+                    <div class="control is-flex is-justify-content-center">
+                        Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <input class="form-control" type="email" name="email" placeholder="Email Address">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
-        </div>
-        <input class="btn btn-primary" type="submit" value="Register">
-    </form>
-
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
-
+    </div>
 {% endblock %}
