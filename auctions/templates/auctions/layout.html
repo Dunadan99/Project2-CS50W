@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
         <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
     </head>
-    <body>        
+    <body class="has-background-white-ter">        
         <nav class="navbar is-dark is-fixed-top">
             <div class="navbar-brand">
                 <a class="navbar-item " href="{% url 'index' %}">
@@ -25,7 +25,7 @@
                         <a class="navbar-item" href="{% url 'index' %}">Active Listings</a>
                         <a class="navbar-item" href="{% url 'categories' %}">Categories</a>
                     {% if user.is_authenticated %}
-                        <a class="navbar-item" href="http://">Watchlist</a>
+                        <a class="navbar-item" href="http://">Watchlist<span class="tag ml-1 is-light">11</span></a>
                         <a class="navbar-item" href="{% url 'create_listing' %}">Create Listing</a>    
                     {% endif %}
                 </div>    
@@ -51,5 +51,13 @@
             {% endblock %}
         </section>
         
+        <footer class="footer has-background-grey-lighter">
+            <div class="content has-text-centered">
+              <p>
+                <strong>Commerce</strong> by <a href="https://github.com/Dunadan99">Victorio Chanja</a>.
+                 For the Web Development course <a href="https://cs50.harvard.edu/web/2020/">CS50w</a>.
+              </p>
+            </div>
+          </footer>
     </body>
 </html>

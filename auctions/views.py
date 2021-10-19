@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.forms import ModelForm, widgets
 
-from .models import Auction, User, Bid
+from .models import Auction, Category, User, Bid
 
 
 def index(request):
@@ -109,5 +109,9 @@ def listing(request, id):
     return render(request, "auctions/listing.html")
 
 def categories(request):
-    return render(request, "auctions/categories.html")
+    list_cat = Category.objects.all()
+    return render(request, "auctions/categories.html", {"categories" : list_cat})
+
+def category(request, id):
+    return render(request, 'auctions/category.html')
     
