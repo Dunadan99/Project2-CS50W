@@ -1,0 +1,19 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Categories{% endblock %}
+
+{% block body %}
+
+<h2 class="title is-2">Categories</h2>
+
+<div class="tile is-ancestor is-flex is-flex-wrap-wrap">
+    {% for category in categories %}
+        <a href="{% url 'category' id=category.id %}" class="tile is-parent is-2">
+            <div class="tile is-child notification is-success">
+                <p class="title is-4">{{ category.name }}</p>
+            </div>
+        </a>
+    {% endfor %}
+</div>
+
+{% endblock %}
