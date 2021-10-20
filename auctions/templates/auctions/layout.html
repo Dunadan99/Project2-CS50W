@@ -46,18 +46,20 @@
                 </div>                
             </div>
         </nav>
-        <section class="section mt-6">
-            {% block body %}
-            {% endblock %}
-        </section>
-        
-        <footer class="footer has-background-grey-lighter">
-            <div class="content has-text-centered">
-              <p>
-                <strong>Commerce</strong> by <a href="https://github.com/Dunadan99">Victorio Chanja</a>.
-                 For the Web Development course <a href="https://cs50.harvard.edu/web/2020/">CS50w</a>.
-              </p>
-            </div>
-          </footer>
+        <div class="flex-wrapper">
+            <section class="section mt-6">
+                {% block body %}
+                {% endblock %}
+            </section>
+            
+            <footer class="footer has-background-grey-lighter">
+                <div class="content has-text-centered">
+                  <p>
+                    <strong>Commerce</strong> by <a href="https://github.com/Dunadan99">Victorio Chanja</a>.
+                     For the Web Development course <a href="https://cs50.harvard.edu/web/2020/">CS50w</a>.
+                  </p>
+                </div>
+              </footer>
+        </div>
     </body>
 </html>

@@ -113,5 +113,7 @@ def categories(request):
     return render(request, "auctions/categories.html", {"categories" : list_cat})
 
 def category(request, id):
-    return render(request, 'auctions/category.html')
+    categ = Category.objects.get(id=id)
+    categ_aucts = categ.items.all()
+    return render(request, 'auctions/category.html', {"category" : categ , "listings" : categ_aucts})
     

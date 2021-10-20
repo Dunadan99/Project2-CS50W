@@ -1,0 +1,26 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Category: {{category.name}}{% endblock %}
+
+{% block body %}
+
+<h2 class="title is-2">Category: {{category.name}}</h2>
+
+<div class="tile is-ancestor is-flex is-flex-wrap-wrap">
+    {% for listing in listings %}
+        <a href="{% url 'listing' id=listing.id %}" class="tile is-parent is-3">
+            <div class="tile is-child notification is-info">
+                <figure class="image is-1by1 has-background-white"><img src="{{ listing.pic }}" alt="image"></figure>
+                <p class="title is-4 my-1">{{ listing.title }}</p>
+                <p class="is-6 ml-3">Price: ${{ listing.starting_bid }}</p>
+                <p class="is-6 ml-3">{{ listing.description }}</p>
+            </div>
+        </a>
+    {% empty %}
+        <div class="notification is-info is-light ml-6">
+            <h4 class="title is-4">There are no active listings.</h4>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
