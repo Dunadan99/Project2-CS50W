@@ -25,7 +25,7 @@
                         <a class="navbar-item" href="{% url 'index' %}">Active Listings</a>
                         <a class="navbar-item" href="{% url 'categories' %}">Categories</a>
                     {% if user.is_authenticated %}
-                        <a class="navbar-item" href="http://">Watchlist<span class="tag ml-1 is-light">11</span></a>
+                        <a class="navbar-item" href="{% url 'watchlist' %}">Watchlist<span class="tag ml-1 is-light">{{watch_number}}</span></a>
                         <a class="navbar-item" href="{% url 'create_listing' %}">Create Listing</a>    
                     {% endif %}
                 </div>    

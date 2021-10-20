@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db.models import constraints
 from django.http import HttpResponse, HttpResponseRedirect
@@ -6,12 +7,14 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.forms import ModelForm, widgets
 
-from .models import Auction, Category, User, Bid
+from .models import Auction, Category, User, Bid, Watchlist
 
 
 def index(request):
-    act_listings = Auction.objects.filter(is_active=True)
-    return render(request, "auctions/index.html", {"listings" : act_listings})
+    var = { "listings" : Auction.objects.filter(is_active=True)}
+    if request.user.is_authenticated:
+        var["watch_number"] = Watchlist.objects.filter(user=request.user).count()
+    return render(request, "auctions/index.html", var)
 
 
 def login_view(request):
@@ -100,20 +103,25 @@ def create_listing(request):
 
             return HttpResponseRedirect(reverse("index"))         
 
-    form = CreateForm()
-    return render(request, "auctions/create_listing.html", {
-        "form": form
-    })
+    form = CreateForm()    
+    var = {"watch_number" : Watchlist.objects.filter(user=request.user).count(), "form" : form}
+    return render(request, "auctions/create_listing.html", var)
 
 def listing(request, id):
     return render(request, "auctions/listing.html")
 
 def categories(request):
     list_cat = Category.objects.all()
-    return render(request, "auctions/categories.html", {"categories" : list_cat})
+    var = {"watch_number" : Watchlist.objects.filter(user=request.user).count(), "categories" : list_cat}
+    return render(request, "auctions/categories.html", var)
 
 def category(request, id):
     categ = Category.objects.get(id=id)
     categ_aucts = categ.items.all()
-    return render(request, 'auctions/category.html', {"category" : categ , "listings" : categ_aucts})
+    var = {"watch_number" : Watchlist.objects.filter(user=request.user).count(), "category" : categ ,
+     "listings" : categ_aucts}
+    return render(request, 'auctions/category.html', var)
+
+def watchlist(request):
+    return render(request, "auctions/watchlist.html")
     
