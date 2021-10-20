@@ -22,6 +22,13 @@ class Auction(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
+    if len(str(description)) >= 90:
+        default = description[:89] + '...'
+    else:
+        default = description
+    
+    desc_short = models.TextField(default=default)
+
     def __str__(self):
         return self.title
     

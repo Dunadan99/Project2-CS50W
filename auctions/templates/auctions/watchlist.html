@@ -7,13 +7,13 @@
 <h2 class="title is-2">Watchlist of {{user.username}}</h2>
 
 <div class="tile is-ancestor is-flex is-flex-wrap-wrap">
-    {% for listing in listings %}
-        <a href="{% url 'listing' id=listing.id %}" class="tile is-parent is-3">
+    {% for item in items %}
+        <a href="{% url 'listing' id=item.listing.id %}" class="tile is-parent is-3">
             <div class="tile is-child notification is-info">
-                <figure class="image is-1by1 has-background-white"><img src="{{ listing.pic }}" alt="image"></figure>
-                <p class="title is-4 my-1">{{ listing.title }}</p>
-                <p class="is-6 ml-3">Price: ${{ listing.starting_bid }}</p>
-                <p class="is-6 ml-3">{{ listing.description }}</p>
+                <figure class="image is-1by1 has-background-white"><img src="{{ item.listing.pic }}" alt="image"></figure>
+                <p class="title is-4 my-1">{{ item.listing.title }}</p>
+                <p class="is-6 ml-3">Price: ${{ item.listing.starting_bid }}</p>
+                <p class="is-6 ml-3">{{ item.listing.description }}</p>
             </div>
         </a>
     {% empty %}

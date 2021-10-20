@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block title%}{{auct.title}}{% endblock %}
+
+{% block body%}
+    <div class="box">        
+        <div class="columns">
+            <div class="column is-3">
+                <figure class="image is-1by1">
+                    <img src="{{auct.pic}}" alt="image post">
+                </figure>
+            </div>
+            <div class="column">
+                <div class="block"><h2 class="title is-2">{{auct.title}}</h2></div>
+                <div class="block ml-5">
+                    <div class="title is-4">Price: ${{auct.starting_bid}}</div>
+                    <div class="subtitle is-6 ml-2">{{auct.description}}</div>                    
+                </div>
+            </div>
+            <div class="column is-1"></div>
+        </div>
+    </div>
+
+{% endblock %}

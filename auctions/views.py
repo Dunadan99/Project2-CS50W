@@ -76,6 +76,8 @@ class CreateForm(ModelForm):
                     'starting_bid' : widgets.NumberInput(attrs={'min' : 0, 'value' : 0.0, 'class' : 'input'}),
                     'title' : widgets.TextInput(attrs={'class' : 'input'}), 'pic' : widgets.URLInput(attrs={'class' : 'input'})}
 
+
+@login_required(login_url="login")
 def create_listing(request):
     if request.method == 'POST':
         form = CreateForm(request.POST)
@@ -108,7 +110,12 @@ def create_listing(request):
     return render(request, "auctions/create_listing.html", var)
 
 def listing(request, id):
-    return render(request, "auctions/listing.html")
+    auct = Auction.objects.get(id=id)
+    comments = auct.comments.all()
+    var = {"auct" : auct, "comments" : comments}
+    if request.user.is_authenticated:
+        var["watch_number"] = Watchlist.objects.filter(user=request.user).count()
+    return render(request, "auctions/listing.html", var)
 
 def categories(request):
     list_cat = Category.objects.all()
@@ -122,6 +129,10 @@ def category(request, id):
      "listings" : categ_aucts}
     return render(request, 'auctions/category.html', var)
 
+@login_required(login_url="login")
 def watchlist(request):
-    return render(request, "auctions/watchlist.html")
+    listing = Watchlist.objects.filter(user=request.user).only('listing')
+    var = {"watch_number" : Watchlist.objects.filter(user=request.user).count(),
+            "items" : listing}
+    return render(request, "auctions/watchlist.html", var)
     
