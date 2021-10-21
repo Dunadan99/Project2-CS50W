@@ -186,4 +186,3 @@ def watchlist(request):
     var = {"watch_number" : Watchlist.objects.filter(user=request.user).count(),
             "items" : listing}
     return render(request, "auctions/watchlist.html", var)
-    
