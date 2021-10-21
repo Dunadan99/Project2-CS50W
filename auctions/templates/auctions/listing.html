@@ -25,17 +25,13 @@
                                 <div class="buttons is-right">
                                     <form action="{% url 'listing' id=auct.id %}" method="post">
                                         {% csrf_token %}
-                                        <input type="hidden" name="listing" value="{{auct.id}}" >
-                                        {% for item in watchlist%}
-                                            {% if auct == item.listing %}
-                                                <input type="hidden" name="watch_id" value="{{item.id}}" >
-                                                <input class="button is-small is-danger" type="submit" name="action" value="Remove from watchlist">
-                                            {% else %}
-                                                <input class="button is-small is-dark" type="submit" name="action" value="Add to watchlist">
-                                            {% endif %}
-                                        {% empty %}
+                                        <input type="hidden" name="listing" value="{{auct.id}}" >                                        
+                                        {% if in_watchlist and user.is_authenticated %}
+                                            <input type="hidden" name="watch_id" value="{{item.id}}" >
+                                            <input class="button is-small is-danger" type="submit" name="action" value="Remove from watchlist">
+                                        {% elif user.is_authenticated %}
                                             <input class="button is-small is-dark" type="submit" name="action" value="Add to watchlist">
-                                        {% endfor %}
+                                        {% endif %}     
                                     </form>
                                 </div>
                             </div>

@@ -156,19 +156,28 @@ def listing(request, id):
     var = {"auct" : auct, "comments" : comments, 'winner_bid' : winner_bid}
     if request.user.is_authenticated:
         var["watch_number"] = Watchlist.objects.filter(user=request.user).count()
-        var["watchlist"] = Watchlist.objects.filter(user=request.user).only('listing')
+        watchlist = Watchlist.objects.filter(user=request.user).only('listing')
+        var['in_watchlist'] = False
+        for item in watchlist:
+            if item.listing == auct:
+                var['in_watchlist'] = True
+                var['item'] = item
+                break
+
     return render(request, "auctions/listing.html", var)
 
 def categories(request):
-    list_cat = Category.objects.all()
-    var = {"watch_number" : Watchlist.objects.filter(user=request.user).count(), "categories" : list_cat}
+    var = {'categories' : Category.objects.all()}
+    if request.user.is_authenticated:
+        var['watch_number'] = Watchlist.objects.filter(user=request.user).count()
     return render(request, "auctions/categories.html", var)
 
 def category(request, id):
     categ = Category.objects.get(id=id)
     categ_aucts = categ.items.all().filter(is_active=True)
-    var = {"watch_number" : Watchlist.objects.filter(user=request.user).count(), "category" : categ ,
-     "listings" : categ_aucts}
+    var = {"category" : categ , "listings" : categ_aucts}
+    if request.user.is_authenticated:
+        var['watch_number'] = Watchlist.objects.filter(user=request.user).count()
     return render(request, 'auctions/category.html', var)
 
 @login_required(login_url="login")
