@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.forms import ModelForm, widgets
 
-from .models import Auction, Category, User, Bid, Watchlist
+from .models import Auction, Category, User, Bid, Watchlist, Comment
 
 
 def index(request):
@@ -92,6 +92,12 @@ def create_listing(request):
             }
             if kwargs['pic'] == '':
                 kwargs['pic'] = 'https://icons-for-free.com/iconfiles/png/512/market+basket+shopping+basket+store+icon+icon-1320085906374523217.png'
+            
+            if len(str(kwargs['description'])) >= 90:
+                kwargs['desc_short'] = str(kwargs['description'])[:85].strip() + '...'
+            else:
+                kwargs['desc_short'] = str(kwargs['description'])
+
             auct = Auction(**kwargs)
             auct.save()
 
@@ -103,18 +109,54 @@ def create_listing(request):
             bid = Bid(**kwargs)
             bid.save()
 
-            return HttpResponseRedirect(reverse("index"))         
+            return HttpResponseRedirect(reverse("index"))     
+        else:
+            var = {"watch_number" : Watchlist.objects.filter(user=request.user).count(), "form" : form}
+            return render(request, "auctions/create_listing.html", var)    
 
     form = CreateForm()    
     var = {"watch_number" : Watchlist.objects.filter(user=request.user).count(), "form" : form}
     return render(request, "auctions/create_listing.html", var)
 
 def listing(request, id):
+
+    if request.method == 'POST':
+        action = request.POST['action']
+
+        if action == 'Remove from watchlist':
+            Watchlist.objects.filter(id=request.POST['watch_id']).delete()
+        elif action == 'Add to watchlist':
+            kwargs = {'user' : request.user, 'listing' : Auction.objects.get(id=request.POST['listing'])}
+            item = Watchlist(**kwargs)
+            item.save()
+        elif action == 'Close listing':
+            listing = Auction.objects.get(id=request.POST['listing'])
+            listing.is_active = False
+            listing.save()
+        elif action == 'Place bid':
+            new_bid = request.POST['bid']
+            listing = Auction.objects.get(id=request.POST['listing'])
+            kwargs = {'bidder' : request.user, 'bid_price' : new_bid, 'rel_auction' : listing}
+            bid = Bid(**kwargs)
+            bid.save()            
+            listing.starting_bid = new_bid
+            listing.save()
+        elif action == 'Delete':
+            Comment.objects.filter(id=request.POST['comment_id']).delete()
+        elif action == 'Post your comment':
+            auct = Auction.objects.get(id=request.POST['listing'])
+            kwargs = {'post' : auct, 'author' : request.user, 'content' : request.POST['comment']}
+            comment = Comment(**kwargs)
+            comment.save()
+
+
     auct = Auction.objects.get(id=id)
     comments = auct.comments.all()
-    var = {"auct" : auct, "comments" : comments}
+    winner_bid = auct.bids.order_by('-bid_price').first()
+    var = {"auct" : auct, "comments" : comments, 'winner_bid' : winner_bid}
     if request.user.is_authenticated:
         var["watch_number"] = Watchlist.objects.filter(user=request.user).count()
+        var["watchlist"] = Watchlist.objects.filter(user=request.user).only('listing')
     return render(request, "auctions/listing.html", var)
 
 def categories(request):
@@ -124,7 +166,7 @@ def categories(request):
 
 def category(request, id):
     categ = Category.objects.get(id=id)
-    categ_aucts = categ.items.all()
+    categ_aucts = categ.items.all().filter(is_active=True)
     var = {"watch_number" : Watchlist.objects.filter(user=request.user).count(), "category" : categ ,
      "listings" : categ_aucts}
     return render(request, 'auctions/category.html', var)

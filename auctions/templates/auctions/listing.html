@@ -11,14 +11,117 @@
                 </figure>
             </div>
             <div class="column">
-                <div class="block"><h2 class="title is-2">{{auct.title}}</h2></div>
+                <div class="block">
+
+                    <div class="level">
+                        <div class="level-right">
+                            <div class="level-item">
+                                <h2 class="title is-2">{{auct.title}}</h2>
+                            </div>
+                        </div>
+                        
+                        <div class="level-right">
+                            <div class="level-item">
+                                <div class="buttons is-right">
+                                    <form action="{% url 'listing' id=auct.id %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="listing" value="{{auct.id}}" >
+                                        {% for item in watchlist%}
+                                            {% if auct == item.listing %}
+                                                <input type="hidden" name="watch_id" value="{{item.id}}" >
+                                                <input class="button is-small is-danger" type="submit" name="action" value="Remove from watchlist">
+                                            {% else %}
+                                                <input class="button is-small is-dark" type="submit" name="action" value="Add to watchlist">
+                                            {% endif %}
+                                        {% empty %}
+                                            <input class="button is-small is-dark" type="submit" name="action" value="Add to watchlist">
+                                        {% endfor %}
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
                 <div class="block ml-5">
                     <div class="title is-4">Price: ${{auct.starting_bid}}</div>
                     <div class="subtitle is-6 ml-2">{{auct.description}}</div>                    
                 </div>
+                <div class="block is-right ml-5">
+                    {% if user.is_authenticated and user == auct.seller and auct.is_active %}
+                        <form action="{% url 'listing' id=auct.id %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="listing" value="{{auct.id}}" >
+                            <input class="button is-medium is-pulled-right is-danger" type="submit" name="action" value="Close listing">
+                        </form>
+                    {% elif user.is_authenticated and auct.is_active %}
+                    <form action="{% url 'listing' id=auct.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="field mr-5">
+                            <input type="hidden" name="listing" value="{{auct.id}}" >
+                            <label class="label" for="bid">Place bid:</label>
+                            <div class="control">
+                                <input class="input" min="{{auct.starting_bid}}" step="0.01" type="number" name="bid" id="bid">
+                            </div>                            
+                        </div>
+                        <div class="field mr-5"><input class="button is-pulled-right is-success" type="submit" name="action" value="Place bid"></div>
+                    </form>
+                    
+                    {% elif user == winner_bid.bidder and not auct.is_active %}
+                        <div class="notification has-text-centered is-success">You are the auction's winner. Congratulations!</div>
+                        
+                    {% elif not auct.is_active %}
+                        <div class="notification has-text-centered is-danger">This auction is closed. {{ winner_bid.bidder }} is the winner.</div>
+                    {% endif %}
+                    <div class="container mt-6">
+                        <p class="subtitle is-6 is-pulled-left">Auction posted by <strong>{{ auct.seller }}</strong> on {{auct.time}}</p>
+                    </div>
+                </div>
             </div>
-            <div class="column is-1"></div>
         </div>
     </div>
+
+    <h2 class="title is-2">Comments</h2>
+    <section class="section">
+        <div class="columns">
+            <div class="column is-10 is-offset-1">
+                <div class="box">
+                    <article class="media">
+                        <div class="media-content">
+                            {% for comment in comments %}                    
+                                <div class="content">
+                                    <p>Posted by <strong>{{ comment.author }}</strong> on {{comment.time}}</p>
+                                    <p class="ml-5">{{comment.content}}</p>
+                                    
+                                    {% if user == comment.author %}
+                                        <form action="{% url 'listing' id=auct.id %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="comment_id" value="{{comment.id}}">
+                                            <input class="button is-danger is-small is-pulled-right" type="submit" name="action" value="Delete">
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            {% empty %}
+                                <div class="content has-text-centered"><h5 class="title is-5">There are no comments.</h5></div>
+                            {% endfor %}
+                            <div class="content mt-6">
+                                <form action="{% url 'listing' id=auct.id %}" method="post">
+                                    {% csrf_token %}                                 
+                                    <div class="field">
+                                        <label class="label" for="comment">Post a comment:</label>
+                                        <div class="control">
+                                            <textarea class="textarea" name="comment" id="comment"></textarea>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="listing" value="{{auct.id}}">
+                                    <input class="button is-success is-pulled-right" type="submit" name="action" value="Post your comment">
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
 
 {% endblock %}
