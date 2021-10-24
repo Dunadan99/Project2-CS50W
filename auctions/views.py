@@ -88,7 +88,8 @@ def create_listing(request):
                 'description' : form.cleaned_data['description'],
                 'starting_bid' : form.cleaned_data['starting_bid'],
                 'pic' : form.cleaned_data['pic'],
-                'auct_category' : form.cleaned_data['auct_category']
+                'auct_category' : form.cleaned_data['auct_category'],
+                'price' : form.cleaned_data['starting_bid']
             }
             if kwargs['pic'] == '':
                 kwargs['pic'] = 'https://icons-for-free.com/iconfiles/png/512/market+basket+shopping+basket+store+icon+icon-1320085906374523217.png'
@@ -139,7 +140,7 @@ def listing(request, id):
             kwargs = {'bidder' : request.user, 'bid_price' : new_bid, 'rel_auction' : listing}
             bid = Bid(**kwargs)
             bid.save()            
-            listing.starting_bid = new_bid
+            listing.price = new_bid
             listing.save()
         elif action == 'Delete':
             Comment.objects.filter(id=request.POST['comment_id']).delete()
