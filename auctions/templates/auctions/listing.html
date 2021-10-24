@@ -40,7 +40,7 @@
 
                 </div>
                 <div class="block ml-5">
-                    <div class="title is-4">Price: ${{auct.starting_bid}}</div>
+                    <div class="title is-4">Price: ${{auct.price}}</div>
                     <div class="subtitle is-6 ml-2">{{auct.description}}</div>                    
                 </div>
                 <div class="block is-right ml-5">
@@ -57,7 +57,7 @@
                             <input type="hidden" name="listing" value="{{auct.id}}" >
                             <label class="label" for="bid">Place bid:</label>
                             <div class="control">
-                                <input class="input" min="{{auct.starting_bid}}" step="0.01" type="number" name="bid" id="bid">
+                                <input class="input" min="{{auct.price}}" step="0.01" type="number" name="bid" id="bid">
                             </div>                            
                         </div>
                         <div class="field mr-5"><input class="button is-pulled-right is-success" type="submit" name="action" value="Place bid"></div>
